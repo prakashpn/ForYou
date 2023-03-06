@@ -7,9 +7,9 @@ from database.db_util import get_mysql_connection, camelize_classname, _gen_rela
 MY_DB = "MY_DB"
 
 host, user, password, dbname = config.get(MY_DB, 'host'), \
-                               config.get(MY_DB, 'user'), \
-                               config.get(MY_DB, 'password'), \
-                               config.get(MY_DB, 'db')
+    config.get(MY_DB, 'user'), \
+    config.get(MY_DB, 'password'), \
+    config.get(MY_DB, 'db')
 
 Base = automap_base()
 engine = get_mysql_connection(host, user, password, dbname)
@@ -22,6 +22,7 @@ for c in Base.classes:
     print(c)
 
 User = Base.classes.User
+Admin = Base.classes.Admin
 
 Session = sessionmaker()
 

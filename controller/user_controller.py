@@ -4,6 +4,7 @@ from database.db_config import close_session, create_session
 from json_serialize.json_util import UserJson
 from repository.user_repository import UserRepository
 from service.user_service import UserService
+from repository.admin_repository import AdminRepository
 
 user_app = Blueprint('user', __name__)
 
@@ -35,12 +36,19 @@ def insert_user():
     """
     session_con, con = create_session()
     data = request.json
+    # print("data :", data)
     try:
-        data = UserService(session_con).insert_user(data)
-        session_con.commit()
-        close_session(session_con, con)
-        return data
-        # return jsonify({"message": "User inserted successfully"})
+        adminEmail = data.get("admin").get("EMAIL")
+        userData = data.get("user")
+        checkEmail = AdminRepository(session_con).find_by_email(adminEmail)
+        if checkEmail:
+            # print("Admin is Present")
+            data = UserService(session_con).insert_user(userData)
+            session_con.commit()
+            close_session(session_con, con)
+            return data
+        else:
+            return jsonify({"message": "Invalid Admin"})
     except Exception as e:
         return e
 
@@ -54,12 +62,19 @@ def update_user():
     """
     session_con, con = create_session()
     data = request.json
+    # print("data :", data)
     try:
-        data = UserService(session_con).update_user(data)
-        session_con.commit()
-        close_session(session_con, con)
-        # return jsonify({"message": "User updated successfully"})
-        return data
+        adminEmail = data.get("admin").get("EMAIL")
+        userData = data.get("user")
+        checkEmail = AdminRepository(session_con).find_by_email(adminEmail)
+        if checkEmail:
+            # print("Admin is Present")
+            data = UserService(session_con).update_user(userData)
+            session_con.commit()
+            close_session(session_con, con)
+            return data
+        else:
+            return jsonify({"message": "Invalid Admin"})
     except Exception as e:
         return e
 

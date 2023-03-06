@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response
 
 from controller.user_controller import user_app
+from controller.admin_controller import admin_app
 
 application = Flask(__name__)
 application.config['SECRET_KEY'] = 'ForYou'
@@ -22,6 +23,7 @@ def resource_not_found(e):
 
 
 application.register_blueprint(user_app, url_prefix='/rest/user')
+application.register_blueprint(admin_app, url_prefix='/rest/admin')
 
 if __name__ == '__main__':
     application.run(host="localhost", port=8080, debug=False)
