@@ -1,5 +1,10 @@
-from flask import jsonify, Blueprint, request
+'''
+DOC:            07/03/2023
+Created By:     Prakash
+Purpose:        get all ,Insert and update user if admin email is valid
+'''
 
+from flask import jsonify, Blueprint, request
 from database.db_config import close_session, create_session
 from json_serialize.json_util import UserJson
 from repository.user_repository import UserRepository
@@ -8,23 +13,41 @@ from repository.admin_repository import AdminRepository
 
 user_app = Blueprint('user', __name__)
 
-
-@user_app.route('/test', methods=['GET'])
-def test():
-    return jsonify(message="Rediected to user controller")
+'''
+Name:       view_user_list()
+DOC:        07/03/2023
+Method:     GET
+Parameters: 
+Purpose:    Used to get all user from user table
+Return:     [List]  response of success/Failure
+'''
 
 
 @user_app.route('/user-list', methods=['GET'])
 def view_user_list():
     """
-    :return:It will give you user list present in User Table
+    return:    It will give you user list present in User Table
     """
-    session_con, con = create_session()
-    datas = UserRepository(session_con).find_all()
-    json_data = UserJson.get_list(datas)
-    close_session(session_con, con)
-    response = jsonify(json_data)
-    return response
+    try:
+        session_con, con = create_session()
+        datas = UserRepository(session_con).find_all()
+        json_data = UserJson.get_list(datas)
+        close_session(session_con, con)
+        response = jsonify(json_data)
+        return response
+
+    except Exception as e:
+        return e
+
+
+'''
+Name:       insert_user()
+DOC:        07/03/2023
+Method:     POST
+Parameters: admin email and user details in the body
+Purpose:    Used to create/insert new record in the user table
+Return:     message:  response of success/Failure
+'''
 
 
 @user_app.route('/insert', methods=['POST'])
@@ -53,6 +76,16 @@ def insert_user():
         return e
 
 
+'''
+Name:       update_user()
+DOC:        07/03/2023
+Method:     PUT
+Parameters: admin email and user details in the body
+Purpose:    Used to update the record according to the avail user email in the user table
+Return:     message:  response of success/Failure
+'''
+
+
 @user_app.route('/update', methods=['PUT'])
 def update_user():
     """
@@ -75,22 +108,5 @@ def update_user():
             return data
         else:
             return jsonify({"message": "Invalid Admin"})
-    except Exception as e:
-        return e
-
-
-@user_app.route('/delete/<USER_ID>', methods=['DELETE'])
-def delete_user(USER_ID):
-    """
-
-    :param USER_ID:
-    :return:
-    """
-    session_con, con = create_session()
-    try:
-        UserService(session_con).delete_user(USER_ID)
-        session_con.commit()
-        close_session(session_con, con)
-        return jsonify({"message": "User deleted successfully"})
     except Exception as e:
         return e

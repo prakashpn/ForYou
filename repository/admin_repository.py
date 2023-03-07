@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import or_, and_
+
 from database.db_config import Admin
 
 
@@ -30,5 +32,8 @@ class AdminRepository():
 
     def find_by_admin_id(self, ADMIN_ID):
         df = self.session.query(Admin).get(ADMIN_ID)
-
         return df
+
+    def find_by_email_and_username(self, USERNAME, PASSWORD):
+        return self.session.query(Admin).filter(and_(or_(Admin.EMAIL == USERNAME), (Admin.USERNAME == USERNAME)),
+                                                (Admin.PASSWORD == PASSWORD)).first()

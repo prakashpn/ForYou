@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import or_, and_
+
 from database.db_config import User
 
 
@@ -28,7 +30,9 @@ class UserRepository():
     def find_by_email(self, EMAIL):
         return self.session.query(User).filter(User.EMAIL == EMAIL).first()
 
-    def find_by_user_id(self, USER_ID):
-        df = self.session.query(User).get(USER_ID)
+    def find_by_email_and_username(self, USERNAME, PASSWORD):
+        # return self.session.query(User).filter((or_(User.EMAIL == USERNAME), (User.USERNAME == USERNAME)),
+        #                                        (User.PASSWORD == PASSWORD)).first()
 
-        return df
+        return self.session.query(User).filter((or_((User.EMAIL == USERNAME), (User.USERNAME == USERNAME))),
+                                               (User.PASSWORD == PASSWORD)).first()

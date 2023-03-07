@@ -34,8 +34,3 @@ class UserService():
             return jsonify({"message": "User updated successfully"})
         else:
             return jsonify(message="Email is not present")
-
-    def delete_user(self, USER_ID):
-        # user.STATUS = "N"
-        user = UserRepository(self.session).find_by_user_id(USER_ID)
-        self.session.delete(user)

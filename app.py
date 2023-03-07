@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, make_response
 
+from controller.auth_controller import auth_app
 from controller.user_controller import user_app
 from controller.admin_controller import admin_app
 
@@ -24,6 +25,8 @@ def resource_not_found(e):
 
 application.register_blueprint(user_app, url_prefix='/rest/user')
 application.register_blueprint(admin_app, url_prefix='/rest/admin')
+application.register_blueprint(auth_app, url_prefix='/rest/auth')
 
 if __name__ == '__main__':
     application.run(host="localhost", port=8080, debug=False)
+    # application.run(host="127.0.0.1", port=5000, debug=True)
